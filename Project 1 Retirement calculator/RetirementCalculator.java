@@ -53,6 +53,6 @@ public class RetirementCalculator {
 				/ monthlyRatePre);
 		
 		//Print out message in the form of '$xxx.xx'
-		System.out.print("The amount needed to save per month is: $" + (int)(monthlyPayment * 100)/100.0);
+		System.out.print("\nThe amount needed to save per month is: $" + (int)(monthlyPayment * 100)/100.0);
 	}
 }
