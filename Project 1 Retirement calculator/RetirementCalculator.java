@@ -13,13 +13,13 @@ public class RetirementCalculator {
 		System.out.print("Enter the years to work: ");
 		double yearsToWork = input.nextDouble();
 		
-		System.out.print("Enter the annual return before retirement (e.g., .07): ");
+		System.out.print("Enter the annual return before retirement (e.g., 0 to .2): ");
 		double annualReturnPre = input.nextDouble();
 		
 		System.out.print("Enter the years retired: ");
 		double yearsRetired = input.nextDouble();
 		
-		System.out.print("Enter the annual return after retirement (e.g., .03): ");
+		System.out.print("Enter the annual return after retirement (i.e., 0 to .03): ");
 		double annualReturnPost = input.nextDouble();
 		
 		System.out.print("Enter the required income: ");
@@ -52,7 +52,7 @@ public class RetirementCalculator {
 		double monthlyPayment = (valueNeeded)/((Math.pow(1 + monthlyRatePre, monthsWorked) - 1)
 				/ monthlyRatePre);
 		
-		//Print out message in the form of '$XXX.XX'
+		//Print out message in the form of '$xxx.xx'
 		System.out.print("The amount needed to save per month is: $" + (int)(monthlyPayment * 100)/100.0);
 	}
 }
