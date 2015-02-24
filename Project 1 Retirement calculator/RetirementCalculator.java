@@ -1,5 +1,5 @@
 import java.util.Scanner;
-
+//group members names
 public class RetirementCalculator {
 //Taks input from user (Years working, interest rates, years retired, required income, and Social Security)
 //to calculate how much money must be saved per month to live on.
@@ -7,6 +7,7 @@ public class RetirementCalculator {
 	public static void main(String[] args) {
 		
 		//Create a Scanner
+		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
 		
 		//Prompt user to input the variables needed
