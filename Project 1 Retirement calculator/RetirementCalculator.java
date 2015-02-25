@@ -1,5 +1,5 @@
 import java.util.Scanner;
-//group members names
+//Robert Pifer, Carey Blackwell, Michael Ivey
 public class RetirementCalculator {
 //Taks input from user (Years working, interest rates, years retired, required income, and Social Security)
 //to calculate how much money must be saved per month to live on.
