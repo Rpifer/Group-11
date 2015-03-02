@@ -18,4 +18,8 @@ public enum eValue {
 	private eValue(int value){
 		this.value = value;
 	}
+	
+	public int getValue(){
+		return value;
+	}
 }
