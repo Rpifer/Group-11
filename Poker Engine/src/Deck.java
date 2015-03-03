@@ -2,9 +2,10 @@ import java.util.ArrayList;
 import java.util.*;
 
 
+
 public class Deck {
 	
-	private ArrayList<Card> DeckCards = new ArrayList<Card>();
+	private static ArrayList<Card> DeckCards = new ArrayList<Card>();
 	
 	private Deck(){
 		int i;
@@ -25,5 +26,12 @@ public class Deck {
 		}
 
 	}
+	
+	public static Card draw(){
+	
+		Card dealt_card = DeckCards.get(0);
+		DeckCards.remove(dealt_card);
+		return dealt_card;
+		
+	}
 }
-
