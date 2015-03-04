@@ -1,8 +1,7 @@
 
 public enum eSuit {
-	SPADES,
-	HEARTS,
+	DIAMONDS,
 	CLUBS,
-	DIAMONDS;
-
+	HEARTS,
+	SPADES,
 }
