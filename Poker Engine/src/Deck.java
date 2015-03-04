@@ -16,19 +16,19 @@ public class Deck {
 		}
 		
 		//Proof of concept showing full, in order deck
-//		for(int i = 0; i < 52; i++){
-//		System.out.println((deckCards.get(i)).getValue().getValue()); 
-//		System.out.println((deckCards.get(i)).getSuit());
-//		}
+		for(int i = 0; i < 52; i++){
+		System.out.println((deckCards.get(i)).getValue().getValue()); 
+		System.out.println((deckCards.get(i)).getSuit());
+		}
 		
 		//After deck is made, shuffle the deck
 		Collections.shuffle(deckCards);
 		
 		//Proof of concept showing full, shuffled deck
-//		for (int i = 0; i < 52; i++) {
-//			System.out.println((deckCards.get(i)).getValue());
-//			System.out.println((deckCards.get(i)).getSuit());
-//		}
+		for (int i = 0; i < 52; i++) {
+			System.out.println((deckCards.get(i)).getValue().getValue());
+			System.out.println((deckCards.get(i)).getSuit());
+		}
 
 	}
 	public static ArrayList<Card> getDeckCards() {
@@ -48,7 +48,7 @@ public class Deck {
 		//returns number of cards left
 		return deckCards.size();
 	}
-//	public static void main(String[] args){
-//		Deck test = new Deck();
-//	}
+	public static void main(String[] args){
+		Deck test = new Deck();
+	}
 }
