@@ -8,7 +8,7 @@ public class Hand {
 	// low card value for play cards
 	private int low;
 	// card values not used for high play
-	private int[] kicker = new int[5];
+	private int[] kicker = new int[4];
 	// new list to hold cards in hand
 	private ArrayList<Card> handCards = new ArrayList<Card>();
 
@@ -47,7 +47,7 @@ public class Hand {
 		return kicker;
 	}
 
-	// basic hand constructor, must pass specific deck
+
 	public Hand(Deck deck) {
 		// all hands start with no strength or high cards until ranked
 		this.setStrength(0);
@@ -131,7 +131,13 @@ public class Hand {
 				this.kicker[0] = getCardValue(hand, 0);
 		}
 
-		// Need full house checker
+		// 4th ranking, the last card will always be the last card
+		// and the low card will always be first
+		else if (hand.isFullHouse()) {
+			hand.setStrength(7);
+			hand.setHigh(getCardValue(hand, 4));
+			hand.setLow(getCardValue(hand, 0));
+		}
 
 		// 5th ranking, the top card will always be last value
 		// the rest are kickers and is used to determine winner if top card ties
@@ -139,31 +145,95 @@ public class Hand {
 			hand.setStrength(6);
 			hand.setHigh(getCardValue(hand, 4));
 			for (int i = 0; i < 4; i++) {
-				this.kicker[i] = getCardValue(hand, i);
+				this.kicker[3 - i] = getCardValue(hand, i);
 			}
 		}
-	}
 
-	public Hand rateHand(Hand[] hands) {
-		Hand winner = null;
-		int max = 0;
-		int high = 0;
-		for (Hand hand : hands) {
-			rateHand(hand);
-			if (hand.getStrength() > max) {
-				max = hand.getStrength();
-				high = hand.getHigh();
-				winner = hand;
-			} else if (hand.getStrength() == max) {
-				if (hand.getHigh() > high) {
-					max = hand.getStrength();
-					high = hand.getHigh();
-					winner = hand;
+		// 4th ranking, the top card will always be last value
+		// the low card will always be first card
+		else if (hand.isStraight()) {
+			hand.setStrength(5);
+			hand.setHigh(getCardValue(hand, 4));
+			hand.setLow(getCardValue(hand, 0));
+		}
+
+		// 3rd ranking, the middle card will always be high value
+		// if it is a low 3OAK then the kicker will be cards 4 and 5
+		// i it is a high 3OAK the the kicker will be cards 1 and 2
+		else if (hand.isThreeOfAKind()) {
+			hand.setStrength(4);
+			hand.setHigh(getCardValue(hand, 2));
+			if (getCardValue(hand, 0) == getCardValue(hand, 2)) {
+				this.kicker[0] = getCardValue(hand, 3);
+				this.kicker[1] = getCardValue(hand, 4);
+			} else {
+				this.kicker[0] = getCardValue(hand, 1);
+				this.kicker[1] = getCardValue(hand, 0);
+			}
+		} else if (hand.isTwoPair()) {
+			hand.setStrength(3);
+			if ((getCardValue(hand, 0) == getCardValue(hand, 1))
+					&& (getCardValue(hand, 2) == getCardValue(hand, 3))) {
+				hand.setHigh(getCardValue(hand, 3));
+				hand.setLow(getCardValue(hand, 0));
+				this.kicker[0] = getCardValue(hand, 4);
+			} else if ((getCardValue(hand, 0) == getCardValue(hand, 1))
+					&& (getCardValue(hand, 3) == getCardValue(hand, 4))) {
+				hand.setHigh(getCardValue(hand, 3));
+				hand.setLow(getCardValue(hand, 0));
+				this.kicker[0] = getCardValue(hand, 2);
+			}
+
+			else if ((getCardValue(hand, 2) == getCardValue(hand, 1))
+					&& (getCardValue(hand, 4) == getCardValue(hand, 3))) {
+				hand.setHigh(getCardValue(hand, 3));
+				hand.setLow(getCardValue(hand, 1));
+				this.kicker[0] = getCardValue(hand, 0);
+			}
+		} else if (hand.isPair()) {
+			hand.setStrength(2);
+			for (int i = 0; i < 4; i++) {
+				if ((handCards.get(i).getValue().getValue() == handCards
+						.get(i + 1).getValue().getValue())) {
+					hand.setHigh(getCardValue(hand, i));
+					switch (i) {
+					case 0: {
+						this.kicker[0] = getCardValue(hand, 4);
+						this.kicker[1] = getCardValue(hand, 3);
+						this.kicker[2] = getCardValue(hand, 2);
+						break;
+					}
+					case 1: {
+						this.kicker[0] = getCardValue(hand, 4);
+						this.kicker[1] = getCardValue(hand, 3);
+						this.kicker[2] = getCardValue(hand, 1);
+						break;
+					}
+					case 2: {
+						this.kicker[0] = getCardValue(hand, 4);
+						this.kicker[1] = getCardValue(hand, 1);
+						this.kicker[2] = getCardValue(hand, 0);
+						break;
+					}
+					case 3: {
+						this.kicker[0] = getCardValue(hand, 2);
+						this.kicker[1] = getCardValue(hand, 1);
+						this.kicker[2] = getCardValue(hand, 0);
+						break;
+					}
+					}
 				}
 
 			}
+
+		} else {
+			hand.setStrength(1);
+			hand.setHigh(getCardValue(hand, 4));
+			this.kicker[0] = getCardValue(hand, 3);
+			this.kicker[1] = getCardValue(hand, 2);
+			this.kicker[2] = getCardValue(hand, 1);
+			this.kicker[3] = getCardValue(hand, 0);
 		}
-		return winner;
 	}
 
 	// Example: (10H,JH, QH, KH, AceH)
@@ -185,17 +255,7 @@ public class Hand {
 	// if they are, it will see if the first card is one less than next card
 	// etc.
 	public boolean isStraightFlush() {
-		if (isFlush()) {
-			return ((handCards.get(0).getValue().getValue() == handCards.get(1)
-					.getValue().getValue() - 1)
-					& (handCards.get(1).getValue().getValue() == handCards
-							.get(2).getValue().getValue() - 1)
-					& (handCards.get(2).getValue().getValue() == handCards
-							.get(3).getValue().getValue() - 1) & (handCards
-					.get(3).getValue().getValue() == handCards.get(4)
-					.getValue().getValue() - 1));
-		} else
-			return false;
+		return (isFlush() && isStraight());
 	}
 
 	// Example: (3H,6H,6C,6D,6S)
@@ -206,9 +266,28 @@ public class Hand {
 		if (handCards.get(0).getValue().getValue() == handCards.get(3)
 				.getValue().getValue()) {
 			return true;
-		} else
+		} else {
+
 			return (handCards.get(1).getValue().getValue() == handCards.get(4)
 					.getValue().getValue());
+		}
+
+	}
+
+	public boolean isFullHouse() {
+		if ((handCards.get(0).getValue().getValue() == handCards.get(2)
+				.getValue().getValue())
+				&& (handCards.get(3).getValue().getValue() == handCards.get(4)
+						.getValue().getValue())) {
+			return true;
+		} else if ((handCards.get(0).getValue().getValue() == handCards.get(1)
+				.getValue().getValue())
+				&& (handCards.get(2).getValue().getValue() == handCards.get(4)
+						.getValue().getValue())) {
+			return true;
+		}
+		return false;
+
 	}
 
 	// Example: (3C,7C,8C,JC,KC)
@@ -221,19 +300,76 @@ public class Hand {
 
 	}
 
-	// Proof of concept that the draw method works, that the new hand method
-	// works, that the sort hand method works.
-	// public static void main(String[] args){
-	// Deck test = new Deck();
-	// Hand testHand = new Hand(test);
-	// for (int i = 0; i < 5; i++){
-	// System.out.println(testHand.getHandCards().get(i).getValue());
-	// System.out.println(testHand.getHandCards().get(i).getSuit());
-	// }
-	// testHand.sortHand();
-	// for (int i = 0; i < 5; i++){
-	// System.out.println(testHand.getHandCards().get(i).getValue());
-	// System.out.println(testHand.getHandCards().get(i).getSuit());
-	// }
-	// }
+	// Example: (5C,6H,7C,8S,9C)
+	// Checks if all values are in order and one plus
+	public boolean isStraight() {
+		if ((handCards.get(0).getValue().getValue() == handCards.get(1)
+				.getValue().getValue() - 1)
+				&& (handCards.get(1).getValue().getValue() == handCards.get(2)
+						.getValue().getValue() - 1)
+				&& (handCards.get(2).getValue().getValue() == handCards.get(3)
+						.getValue().getValue() - 1)
+				&& (handCards.get(3).getValue().getValue() == handCards.get(4)
+						.getValue().getValue() - 1)) {
+			return true;
+		}
+		return false;
+	}
+
+	// Example: (5C,5S,5H,8H,JC)
+	// Checks if there are 3 of the same value in the hand
+	public boolean isThreeOfAKind() {
+		if ((handCards.get(0).getValue().getValue() == handCards.get(2)
+				.getValue().getValue())
+				|| (handCards.get(2).getValue().getValue() == handCards.get(4)
+						.getValue().getValue())) {
+			return true;
+		}
+		return false;
+	}
+
+	// Example: (2C,2H,9S,JH,JS)
+	// Checks if there are 2 pairs of 2 values
+	public boolean isTwoPair() {
+		if ((handCards.get(0).getValue().getValue() == handCards.get(1)
+				.getValue().getValue())
+				&& (handCards.get(2).getValue().getValue() == handCards.get(3)
+						.getValue().getValue())) {
+			return true;
+		}
+
+		else if ((handCards.get(1).getValue().getValue() == handCards.get(2)
+				.getValue().getValue())
+				&& (handCards.get(3).getValue().getValue() == handCards.get(4)
+						.getValue().getValue())) {
+			return true;
+		}
+
+		else if ((handCards.get(0).getValue().getValue() == handCards.get(1)
+				.getValue().getValue())
+				&& (handCards.get(3).getValue().getValue() == handCards.get(4)
+						.getValue().getValue())) {
+			return true;
+
+		}
+		return false;
+	}
+
+	// Example: (6H,9C,10H,10S,KC)
+	// Checks if there is a pair of values
+	public boolean isPair() {
+		for (int i = 0; i < 4; i++) {
+			if ((handCards.get(i).getValue().getValue() == handCards.get(i + 1)
+					.getValue().getValue())) {
+				return true;
+			}
+
+		}
+		return false;
+	}
+	public void printHand5(Hand hand){
+		for (int i = 0; i < 5; i++){
+			System.out.println(hand.getHandCards().get(i).getValue() + " of " + hand.getHandCards().get(i).getSuit());
+		}
+	}
 }
